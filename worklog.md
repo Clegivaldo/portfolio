@@ -248,3 +248,28 @@ Work Log:
 
 Stage Summary:
 - Portrait now served as AVIF (135 KB, full 1086x1448) — crisp quality confirmed by user + VLM, ~15x smaller than the source PNG.
+
+---
+Task ID: 6
+Agent: main (orchestrator)
+Task: Fix hydration error — "server rendered text didn't match the client" (Sobre vs About).
+
+Work Log:
+- Root cause: the LanguageProvider used a lazy `useState(() => getInitialLang())` initializer that read localStorage/navigator.language on the FIRST client render. The server always renders "pt" (SSR), but the client could render "en" (persisted/browser) during hydration → React detected the text mismatch ("Sobre" vs "About") and threw a recoverable hydration error. The `suppressHydrationWarning` wrapper only covered the wrapper div's direct text, not the deeply-nested nav links.
+- Fix: rewrote LanguageProvider using React's `useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)` — the hook React designed exactly for external stores that differ between server and client.
+  • `getServerSnapshot()` → always returns "pt" (used for SSR AND the initial hydration render → they match → no hydration error).
+  • `getSnapshot()` → reads localStorage + navigator.language (client only, after hydration).
+  • After hydration, React detects getSnapshot ≠ getServerSnapshot and seamlessly re-renders with the persisted language — no flash of incorrect content, no error.
+  • `subscribe()` listens to a custom `portfolio-lang-change` event (same-tab updates from setLang) + the native `storage` event (cross-tab sync).
+  • `setLang()` writes localStorage + dispatches the custom event → triggers re-render via useSyncExternalStore.
+- Removed the old lazy-initializer + suppressHydrationWarning wrapper div (no longer needed).
+- Verified with Agent Browser:
+  • Cleared localStorage → fresh load: no hydration error, detects browser language (en).
+  • Stored "pt" → reload: renders "Sobre", no error.
+  • Stored "en" → reload (CRITICAL test — differs from server "pt"): renders "About" after seamless post-hydration transition, NO hydration error.
+  • Toggle click PT→EN→PT: works, <html lang> updates, no console errors.
+- `bun run lint` clean.
+
+Stage Summary:
+- Hydration error fully resolved via useSyncExternalStore. SSR always renders "pt"; the client hydrates with "pt" (matching), then React transitions to the persisted/browser language without any mismatch error.
+- Language switching (PT/EN toggle, localStorage persistence, browser detection, cross-tab sync) all still work correctly.
