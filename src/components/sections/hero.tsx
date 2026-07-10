@@ -4,14 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { Magnetic } from "@/components/primitives/magnetic"
 import { ChevronDown, Terminal, Cpu, Sparkles } from "lucide-react"
-
-const ROLES = [
-  "Engenheiro de Computação",
-  "Técnico em Desenvolvimento de Sistemas",
-  "Técnico em Informática",
-  "Gerente de Pesquisa & Desenvolvimento",
-  "Cursando MBA em Inteligência Artificial",
-]
+import { useLanguage } from "@/components/providers/language-provider"
 
 function useRotator(words: string[], interval = 2600) {
   const [i, setI] = useState(0)
@@ -32,7 +25,8 @@ export function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.94])
 
-  const idx = useRotator(ROLES)
+  const { t } = useLanguage()
+  const idx = useRotator(t.hero.roles)
 
   return (
     <section
@@ -44,7 +38,7 @@ export function Hero() {
         style={{ y, opacity, scale }}
         className="relative z-10 mx-auto flex max-w-6xl flex-col items-center text-center"
       >
-        {/* legibility backdrop: soft dark radial behind the text block */}
+        {/* legibility backdrop */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120%] w-[140%] -translate-x-1/2 -translate-y-1/2"
@@ -66,7 +60,7 @@ export function Hero() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
           </span>
-          disponível para projetos & inovação
+          {t.hero.available}
         </motion.div>
 
         {/* name */}
@@ -76,9 +70,9 @@ export function Hero() {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl md:text-8xl"
         >
-          <span className="block text-foreground">Clegivaldo</span>
+          <span className="block text-foreground">{t.hero.nameFirst}</span>
           <span className="block text-gradient anim-gradient-pan text-glow">
-            Cruz
+            {t.hero.nameLast}
           </span>
         </motion.h1>
 
@@ -94,7 +88,7 @@ export function Hero() {
           <span className="text-foreground/80">$</span>
           <span className="relative inline-block overflow-hidden">
             <span key={idx} className="inline-block animate-[fadeUp_0.5s_ease]">
-              {ROLES[idx]}
+              {t.hero.roles[idx]}
             </span>
             <span className="ml-1 inline-block h-4 w-[2px] translate-y-0.5 anim-blink bg-primary align-middle" />
           </span>
@@ -107,14 +101,21 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.32 }}
           className="mx-auto mt-8 max-w-2xl text-balance text-base leading-relaxed text-foreground/75 sm:text-lg"
         >
-          Nerd assumido, amante de tecnologias e construtor de sistemas que
-          resolvem problemas reais. Lidero{" "}
-          <span className="text-foreground">Pesquisa & Desenvolvimento</span>,
-          construo plataformas web para{" "}
-          <span className="text-foreground">metrologia</span> e{" "}
-          <span className="text-foreground">laboratórios de análise</span>, e
-          agora mergulho de cabeça no universo da{" "}
-          <span className="text-primary">Inteligência Artificial</span>.
+          {t.hero.pitch.map((seg, i) => {
+            if (seg.hl === "primary")
+              return (
+                <span key={i} className="text-primary">
+                  {seg.text}
+                </span>
+              )
+            if (seg.hl === "fg")
+              return (
+                <span key={i} className="text-foreground">
+                  {seg.text}
+                </span>
+              )
+            return <span key={i}>{seg.text}</span>
+          })}
         </motion.p>
 
         {/* CTAs */}
@@ -130,7 +131,7 @@ export function Hero() {
               className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:shadow-glow active:scale-95"
             >
               <Cpu className="h-4 w-4 transition-transform group-hover:rotate-12" />
-              Ver projetos
+              {t.hero.ctaProjects}
             </a>
           </Magnetic>
           <Magnetic>
@@ -139,7 +140,7 @@ export function Hero() {
               className="inline-flex items-center gap-2 rounded-full border border-border bg-elevated/40 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition-all hover:border-primary/50 hover:bg-elevated/70 active:scale-95"
             >
               <Sparkles className="h-4 w-4 text-accent2" />
-              Falar no WhatsApp
+              {t.hero.ctaContact}
             </a>
           </Magnetic>
         </motion.div>
@@ -151,11 +152,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.56 }}
           className="mt-14 grid w-full max-w-2xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60"
         >
-          {[
-            { k: "Engenharia", v: "Computação" },
-            { k: "Liderança", v: "P&D" },
-            { k: "Now", v: "MBA · IA" },
-          ].map((s) => (
+          {t.hero.stats.map((s) => (
             <div
               key={s.k}
               className="bg-void/60 px-4 py-4 text-center backdrop-blur"
@@ -182,7 +179,7 @@ export function Hero() {
           className="group flex flex-col items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
         >
           <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
-            scroll
+            {t.hero.scroll}
           </span>
           <span className="relative flex h-9 w-5 justify-center rounded-full border border-border/70">
             <span className="absolute top-1.5 h-1.5 w-1 rounded-full bg-primary [animation:scroll-dot_1.8s_ease-in-out_infinite]" />

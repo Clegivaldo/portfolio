@@ -4,6 +4,7 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { SmoothScroll } from "@/components/providers/smooth-scroll"
 import { ThemeProvider } from "@/components/providers/theme-provider"
+import { LanguageProvider } from "@/components/providers/language-provider"
 
 const inter = Inter({
   variable: "--font-inter",
@@ -75,8 +76,10 @@ export default function RootLayout({
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased font-sans`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <SmoothScroll>{children}</SmoothScroll>
-          <Toaster />
+          <LanguageProvider>
+            <SmoothScroll>{children}</SmoothScroll>
+            <Toaster />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

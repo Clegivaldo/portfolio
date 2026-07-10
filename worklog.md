@@ -182,3 +182,38 @@ Stage Summary:
 - Portrait treatment is non-square (hexagon mask, gradient frame, 3D tilt, HUD corners, glow) AND the person remains clearly recognizable (verified by VLM).
 - framer-motion v12 researched & used (useScroll/useTransform/useMotionValue/useSpring/useMotionTemplate/useInView/variants/stagger); 21st.dev patterns (MagicCard, BorderBeam, Marquee, NumberTicker) built locally to avoid registry friction; ui-ux-pro-max-skill rules applied (Motion-Driven style, 44px targets, focus-visible, prefers-reduced-motion, dvh, no emoji-as-icons, Lucide icons).
 - Artifacts: src/lib/scroll-state.ts, src/app/{layout,page,globals.css}.tsx, src/components/{providers,three,primitives,sections}/* (20+ components).
+
+---
+Task ID: 3
+Agent: main (orchestrator)
+Task: Add a language switcher (PT/EN) to the navbar and make the entire site switchable between Portuguese and English.
+
+Work Log:
+- Built a bilingual i18n system (no external router/intl lib needed):
+  • src/lib/i18n/dictionaries.ts — full pt + en dictionaries with a shared `Dict` type (`typeof dictionary.pt`) so the two languages are shape-checked at compile time. Covers nav, hero (incl. role rotator + rich-text pitch segments), about (terminal bio + facts + stats + traits), skills (marquee + categories + tools), experience (timeline steps), projects (4 items + animated preview labels/URLs/rows/logs), education (4 items + status/progress labels), contact (CTAs + terminal card + WhatsApp prefilled message + email subject), footer, common. Rich-text section titles modelled as `{pre, hl, post}` HeadingParts.
+  • src/components/providers/language-provider.tsx — React context provider holding `lang` ('pt'|'en'), `setLang`, `toggle`, and `t` (current dictionary). Uses a lazy `useState` initializer so the first client render already reflects the persisted/browser preference (no setState-in-effect, no flash). Persists to `localStorage["portfolio-lang"]`; falls back to `navigator.language`. Keeps `<html lang>` in sync. Wraps children with `suppressHydrationWarning` so the SSR (pt) → client (persisted) difference doesn't warn.
+- Updated SectionHeading to accept either a ReactNode or a `{pre,hl,post}` object for `title`, rendering the `hl` part inside a `text-gradient` span — keeps every section heading's gradient highlight working in both languages.
+- Added a `LanguageToggle` (segmented PT | EN pill with a `layoutId="lang-pill"` animated indicator via framer-motion) to the navbar, with a Globe icon. Visible on both desktop and mobile. The navbar links, CTA, and mobile menu all re-render from the dictionary.
+- Refactored all 7 sections + footer to consume `useLanguage().t`:
+  • Navbar: links + CTA from `t.nav.*`.
+  • Hero: name, availability chip, roles array (rotator), pitch (segments with fg/primary highlights), CTAs, stat strip, scroll label.
+  • About: section heading, terminal bio (user/cat/p1/p2/p3/prompt), nameplate chip (passed to TiltPhoto), facts, stats, traits (icons kept in component, text from dict).
+  • Skills: marquee items, 4 category cards (icons + accents kept in component), tools row.
+  • Experience: 4 timeline steps (period/role/org/points/tags), NOW badge, closing line.
+  • Projects: 4 items + all animated preview internals (metrology card labels/URL/values, lab sample rows + statuses + realtime label, AI pipeline URL + log lines). Icons/accents kept in component.
+  • Education: 4 items + status pills (concluído/cursando → completed/ongoing) + progress labels.
+  • Contact: heading, CTAs, status line, terminal card, and — importantly — the WhatsApp `wa.me` URL now encodes the translated prefilled message and the mailto encodes the translated subject.
+  • Footer: role line + built-with note + "top" label.
+- Updated layout.tsx to wrap the app in <LanguageProvider> (inside ThemeProvider, around SmoothScroll).
+- Verification (Agent Browser + VLM):
+  • Toggle present (refs PT/EN), clicking PT → `<html lang="pt-BR">` + Portuguese nav/headings; clicking EN → `<html lang="en">` + English nav/headings.
+  • localStorage `portfolio-lang` persisted; after a full reload the chosen language is restored (verified EN survives reload).
+  • Browser default detection works (agent browser → EN on first load; pt-BR users would get PT).
+  • VLM confirms EN hero is fully in English, toggle visible with EN active, layout clean; mobile (390px) toggle usable, no horizontal scroll.
+  • `bun run lint` clean; no console errors.
+
+Stage Summary:
+- Full PT ⇄ EN language switching implemented end-to-end via a lightweight, type-safe dictionary + context provider (no next-intl routing overhead).
+- Toggle is in the navbar (Globe + PT|EN segmented pill with animated indicator), works on desktop and mobile, persists across reloads, and respects the browser language on first visit.
+- Every visible string — including the WhatsApp prefilled message, mailto subject, animated project preview labels/URLs/logs, terminal bio, timeline tags, and education status pills — switches language.
+- Artifacts: src/lib/i18n/dictionaries.ts, src/components/providers/language-provider.tsx, updated navbar/hero/about/skills/experience/projects/education/contact/site-footer/section-heading/layout.

@@ -21,9 +21,11 @@ import { cn } from "@/lib/utils"
 export function TiltPhoto({
   className,
   size = 380,
+  nameplate = "clegivaldo.exe",
 }: {
   className?: string
   size?: number
+  nameplate?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const rx = useMotionValue(0)
@@ -146,7 +148,7 @@ export function TiltPhoto({
           className="absolute -bottom-6 left-1/2 -translate-x-1/2 glass-strong rounded-full px-4 py-2 font-mono text-[10px] uppercase tracking-[0.3em] text-primary"
           style={{ transform: "translateZ(60px) translateX(-50%)" }}
         >
-          clegivaldo.exe
+          {nameplate}
         </motion.div>
       </motion.div>
     </div>

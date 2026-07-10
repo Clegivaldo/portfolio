@@ -2,8 +2,10 @@
 
 import { ArrowUp } from "lucide-react"
 import { Magnetic } from "@/components/primitives/magnetic"
+import { useLanguage } from "@/components/providers/language-provider"
 
 export function SiteFooter() {
+  const { t } = useLanguage()
   const year = new Date().getFullYear()
   return (
     <footer className="relative z-10 mt-auto border-t border-border/60 bg-void/60 backdrop-blur">
@@ -17,24 +19,23 @@ export function SiteFooter() {
               Clegivaldo Cruz
             </div>
             <div className="font-mono text-xs text-muted-foreground">
-              engenheiro · P&D · IA · {year}
+              {t.footer.role} {year}
             </div>
           </div>
         </div>
 
         <p className="order-3 max-w-md text-center font-mono text-xs text-muted-foreground md:order-2 md:text-center">
-          construído com Next.js, Three.js, R3F, Framer Motion & Lenis —
-          muito <span className="text-primary">vibecode</span> no processo.
+          {t.footer.builtWith}
         </p>
 
         <Magnetic strength={0.5} className="order-2 md:order-3">
           <a
             href="#top"
-            aria-label="Voltar ao topo"
+            aria-label={t.footer.top}
             className="group inline-flex items-center gap-2 rounded-full border border-border bg-elevated/50 px-4 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/50"
           >
             <ArrowUp className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5" />
-            topo
+            {t.footer.top}
           </a>
         </Magnetic>
       </div>

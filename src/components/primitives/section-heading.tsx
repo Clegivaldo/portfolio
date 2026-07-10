@@ -2,6 +2,8 @@
 
 import { Reveal } from "./reveal"
 import { cn } from "@/lib/utils"
+import type { HeadingParts } from "@/lib/i18n/dictionaries"
+import type { ReactNode } from "react"
 
 export function SectionHeading({
   index,
@@ -13,11 +15,21 @@ export function SectionHeading({
 }: {
   index: string
   label: string
-  title: React.ReactNode
-  description?: React.ReactNode
+  title: ReactNode | HeadingParts
+  description?: ReactNode
   align?: "left" | "center"
   className?: string
 }) {
+  const titleNode =
+    typeof title === "object" && title !== null && "pre" in title ? (
+      <>
+        {title.pre} <span className="text-gradient">{title.hl}</span>
+        {title.post ?? ""}
+      </>
+    ) : (
+      title
+    )
+
   return (
     <div
       className={cn(
@@ -35,7 +47,7 @@ export function SectionHeading({
       </Reveal>
       <Reveal delay={0.05}>
         <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-          {title}
+          {titleNode}
         </h2>
       </Reveal>
       {description && (

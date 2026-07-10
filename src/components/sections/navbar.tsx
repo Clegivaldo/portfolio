@@ -3,15 +3,8 @@
 import { motion, useScroll, useSpring } from "framer-motion"
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
-
-const LINKS = [
-  { href: "#sobre", label: "Sobre" },
-  { href: "#stack", label: "Stack" },
-  { href: "#experiencia", label: "Carreira" },
-  { href: "#projetos", label: "Projetos" },
-  { href: "#formacao", label: "Formação" },
-  { href: "#contato", label: "Contato" },
-]
+import { useLanguage } from "@/components/providers/language-provider"
+import { Globe } from "lucide-react"
 
 export function Navbar() {
   const { scrollYProgress } = useScroll()
@@ -22,6 +15,16 @@ export function Navbar() {
   })
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const { t, lang, setLang } = useLanguage()
+
+  const LINKS = [
+    { href: "#sobre", label: t.nav.sobre },
+    { href: "#stack", label: t.nav.stack },
+    { href: "#experiencia", label: t.nav.carreira },
+    { href: "#projetos", label: t.nav.projetos },
+    { href: "#formacao", label: t.nav.formacao },
+    { href: "#contato", label: t.nav.contato },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -80,12 +83,15 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
+            <LanguageToggle lang={lang} setLang={setLang} />
+
             <a
               href="#contato"
               className="hidden rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:shadow-glow active:scale-95 sm:inline-flex"
             >
-              Vamos conversar
+              {t.nav.cta}
             </a>
+
             {/* mobile toggle */}
             <button
               type="button"
@@ -121,7 +127,11 @@ export function Navbar() {
         {/* mobile menu */}
         <motion.div
           initial={false}
-          animate={open ? { opacity: 1, y: 0, pointerEvents: "auto" } : { opacity: 0, y: -8, pointerEvents: "none" }}
+          animate={
+            open
+              ? { opacity: 1, y: 0, pointerEvents: "auto" }
+              : { opacity: 0, y: -8, pointerEvents: "none" }
+          }
           transition={{ duration: 0.22 }}
           className="mx-4 mt-2 md:hidden"
         >
@@ -144,7 +154,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="mt-1 block rounded-xl bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground"
                 >
-                  Vamos conversar
+                  {t.nav.cta}
                 </a>
               </li>
             </ul>
@@ -152,5 +162,48 @@ export function Navbar() {
         </motion.div>
       </header>
     </>
+  )
+}
+
+/** Segmented PT | EN language switcher. */
+function LanguageToggle({
+  lang,
+  setLang,
+}: {
+  lang: "pt" | "en"
+  setLang: (l: "pt" | "en") => void
+}) {
+  return (
+    <div
+      className="glass-strong relative flex items-center rounded-full p-1"
+      role="group"
+      aria-label="Language switcher"
+    >
+      <Globe className="ml-1.5 mr-0.5 h-3.5 w-3.5 text-muted-foreground" aria-hidden />
+      {(["pt", "en"] as const).map((l) => {
+        const active = lang === l
+        return (
+          <button
+            key={l}
+            type="button"
+            onClick={() => setLang(l)}
+            aria-pressed={active}
+            className={cn(
+              "relative rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wider transition-colors",
+              active ? "text-void" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {active && (
+              <motion.span
+                layoutId="lang-pill"
+                className="absolute inset-0 rounded-full bg-primary"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10">{l}</span>
+          </button>
+        )
+      })}
+    </div>
   )
 }
