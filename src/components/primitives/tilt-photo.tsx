@@ -109,7 +109,7 @@ export function TiltPhoto({
         {/* portrait image */}
         <div className="absolute inset-[3px] clip-hex overflow-hidden">
           <Image
-            src="/profile/portrait-hq.webp"
+            src="/profile/portrait.avif"
             alt="Clegivaldo Cruz — Engenheiro de Computação"
             fill
             sizes={`${size}px`}

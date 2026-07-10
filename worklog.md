@@ -235,3 +235,16 @@ Work Log:
 Stage Summary:
 - Portrait is now crisp at full original resolution; no more pixelation. Asset: `public/profile/portrait-hq.webp` (261 KB, q96, 1086x1448).
 - The hexagon tilt treatment, glow, HUD corners, and nameplate are unchanged — only the underlying image source + quality changed.
+
+---
+Task ID: 5
+Agent: main (orchestrator)
+Task: The webp was still bad quality; user confirmed the PNG and AVIF are good — switch to AVIF.
+
+Work Log:
+- Switched TiltPhoto src from `/profile/portrait-hq.webp` to `/profile/portrait.avif` (1086x1448, 135 KB, q80 — the version the user confirmed is good).
+- Deleted the remaining webp (`portrait-hq.webp`). Only `original.png` (source) and `portrait.avif` (served) remain in public/profile/.
+- Verified in Agent Browser: AVIF loads at natural 1086x1448, complete. VLM confirms face is sharp/clear, hair/beard/smile well-defined, no pixelation.
+
+Stage Summary:
+- Portrait now served as AVIF (135 KB, full 1086x1448) — crisp quality confirmed by user + VLM, ~15x smaller than the source PNG.
