@@ -217,3 +217,21 @@ Stage Summary:
 - Toggle is in the navbar (Globe + PT|EN segmented pill with animated indicator), works on desktop and mobile, persists across reloads, and respects the browser language on first visit.
 - Every visible string — including the WhatsApp prefilled message, mailto subject, animated project preview labels/URLs/logs, terminal bio, timeline tags, and education status pills — switches language.
 - Artifacts: src/lib/i18n/dictionaries.ts, src/components/providers/language-provider.tsx, updated navbar/hero/about/skills/experience/projects/education/contact/site-footer/section-heading/layout.
+
+---
+Task ID: 4
+Agent: main (orchestrator)
+Task: Fix the pixelated/low-quality portrait — the converted webp versions were bad; use the good original.
+
+Work Log:
+- Diagnosed: the previous `portrait.webp` was 900x1200 @ q85 (72 KB) — too aggressive a downscale → soft/pixelated face inside the small hexagon viewport.
+- Regenerated with sharp keeping the FULL original resolution (1086x1448):
+  • `public/profile/portrait-hq.webp` — webp quality 96, effort 6, smartSubsample (261 KB)
+  • `public/profile/portrait.avif` — avif quality 80, effort 6 (135 KB, modern-browser fallback ready)
+- Deleted the old low-quality webps (portrait.webp / portrait-mono.webp / portrait-tinted.webp).
+- Updated `TiltPhoto` to use `/profile/portrait-hq.webp` with `unoptimized` on next/image (serve the pre-baked high-quality asset directly instead of re-encoding through the Next image optimizer, which was further degrading it) and reduced the scanline overlay opacity 0.08 → 0.05 so the photo reads cleaner.
+- Verified with Agent Browser + VLM: image loads at natural 1086x1448, face is sharp, hair/beard/eyes well-defined, person recognizable, no pixelation.
+
+Stage Summary:
+- Portrait is now crisp at full original resolution; no more pixelation. Asset: `public/profile/portrait-hq.webp` (261 KB, q96, 1086x1448).
+- The hexagon tilt treatment, glow, HUD corners, and nameplate are unchanged — only the underlying image source + quality changed.

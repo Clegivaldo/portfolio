@@ -109,11 +109,12 @@ export function TiltPhoto({
         {/* portrait image */}
         <div className="absolute inset-[3px] clip-hex overflow-hidden">
           <Image
-            src="/profile/portrait.webp"
+            src="/profile/portrait-hq.webp"
             alt="Clegivaldo Cruz — Engenheiro de Computação"
             fill
             sizes={`${size}px`}
             priority
+            unoptimized
             className="object-cover object-top transition-[filter,transform] duration-700 group-hover:scale-[1.04]"
           />
           {/* subtle cursor-tracking glow on top of photo */}
@@ -127,7 +128,7 @@ export function TiltPhoto({
           {/* very subtle scanline for "screen" feel */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            className="pointer-events-none absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage:
                 "repeating-linear-gradient(to bottom, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1px, transparent 1px, transparent 3px)",
