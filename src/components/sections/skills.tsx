@@ -70,7 +70,7 @@ export function Skills() {
           const Icon = CATEGORY_ICONS[i] ?? Layers
           const accent = CATEGORY_ACCENTS[i] ?? "var(--primary)"
           return (
-            <StaggerItem key={c.title}>
+            <StaggerItem key={i}>
               <MagicCard className="h-full p-6">
                 <div className="flex items-start gap-4">
                   <div
@@ -91,8 +91,8 @@ export function Skills() {
                 </div>
 
                 <ul className="mt-5 space-y-3">
-                  {c.items.map((it) => (
-                    <li key={it.name}>
+                  {c.items.map((it, j) => (
+                    <li key={j}>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-foreground/90">{it.name}</span>
                         <span className="font-mono text-xs text-muted-foreground">
@@ -127,7 +127,7 @@ export function Skills() {
             const Icon = TOOL_ICONS[i] ?? Sparkles
             return (
               <span
-                key={name}
+                key={i}
                 className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-elevated/40 px-3 py-1.5 text-sm text-foreground/90 backdrop-blur transition-colors hover:border-primary/40"
               >
                 <Icon className="h-3.5 w-3.5 text-primary" />

@@ -50,7 +50,7 @@ export function Experience() {
             const Icon = STEP_ICONS[i] ?? Briefcase
             const accent = STEP_ACCENTS[i] ?? "var(--primary)"
             return (
-              <StaggerItem key={s.role}>
+              <StaggerItem key={i}>
                 <div
                   className={`relative flex items-start gap-6 pl-12 md:pl-0 ${
                     left ? "md:flex-row" : "md:flex-row-reverse"
@@ -133,9 +133,9 @@ export function Experience() {
                             left ? "md:justify-end" : ""
                           }`}
                         >
-                          {s.tags.map((tag) => (
+                          {s.tags.map((tag, j) => (
                             <Badge
-                              key={tag}
+                              key={j}
                               variant="outline"
                               className="border-border/60 bg-void/40 font-mono text-[10px] text-muted-foreground"
                             >

@@ -57,7 +57,7 @@ export function Projects() {
           const kind: PreviewKind =
             i === 0 ? "metrology" : i === 1 ? "lab" : i === 2 ? "portfolio" : "ai"
           return (
-            <StaggerItem key={item.title} className="h-full">
+            <StaggerItem key={i} className="h-full">
               <MagicCard className="h-full">
                 {item.featured && <BorderBeam duration={8} />}
                 <Preview kind={kind} accent={accent} t={t} />
@@ -97,9 +97,9 @@ export function Projects() {
                   </p>
 
                   <ul className="mt-4 space-y-1.5">
-                    {item.highlights.map((h) => (
+                    {item.highlights.map((h, j) => (
                       <li
-                        key={h}
+                        key={j}
                         className="flex items-start gap-2 text-sm text-foreground/85"
                       >
                         <CheckCircle2
@@ -112,13 +112,13 @@ export function Projects() {
                   </ul>
 
                   <div className="mt-5 flex flex-wrap gap-1.5">
-                    {item.stack.map((s) => (
+                    {item.stack.map((st, j) => (
                       <Badge
-                        key={s}
+                        key={j}
                         variant="outline"
                         className="border-border/60 bg-void/40 font-mono text-[10px] text-muted-foreground"
                       >
-                        {s}
+                        {st}
                       </Badge>
                     ))}
                   </div>
@@ -210,7 +210,7 @@ function MetrologyPreview({ accent, t }: { accent: string; t: Dict }) {
       </div>
       <div className="grid flex-1 grid-cols-3 gap-2">
         {cards.map((c, i) => (
-          <div key={c.l} className="rounded-md border border-border/50 bg-void/50 p-2">
+          <div key={i} className="rounded-md border border-border/50 bg-void/50 p-2">
             <div className="font-mono text-[7px] uppercase text-muted-foreground">
               {c.l}
             </div>

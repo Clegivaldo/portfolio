@@ -4,7 +4,7 @@
 export type Lang = "pt" | "en"
 
 export type HeadingParts = { pre: string; hl: string; post?: string }
-export type Segment = { text: string; hl?: "fg" | "primary" }
+export type Segment = { text: string; hl?: "fg" | "primary" | "accent2" | "accent3" }
 
 export const dictionary = {
   pt: {
@@ -58,9 +58,27 @@ export const dictionary = {
       terminal: {
         user: "clegivaldo@portfolio: ~/whoami",
         cat: "$ cat profile.md",
-        p1: "Sou o Clegivaldo Cruz — engenheiro de computação, técnico em desenvolvimento de sistemas e em informática. Nerd assumido, movido a café e curiosidade.",
-        p2: "Hoje atuo como Gerente de Pesquisa & Desenvolvimento, onde conecto engenharia, produto e negócio. Construí sistemas web para empresa de metrologia e laboratório de análises — muito disso usando vibecode, programação assistida por IA que acelera a entrega sem perder o rigor.",
-        p3: "Agora cursando MBA em Inteligência Artificial para levar P&D para o próximo nível: agentes, visão, dados e automação inteligente.",
+        p1: [
+          { text: "Sou o " },
+          { text: "Clegivaldo Cruz", hl: "primary" },
+          { text: " — engenheiro de computação, técnico em desenvolvimento de sistemas e em informática. Nerd assumido, movido a café e curiosidade." },
+        ],
+        p2: [
+          { text: "Hoje atuo como " },
+          { text: "Gerente de Pesquisa & Desenvolvimento", hl: "accent2" },
+          { text: ", onde conecto engenharia, produto e negócio. Construí sistemas web para " },
+          { text: "empresa de metrologia", hl: "accent3" },
+          { text: " e " },
+          { text: "laboratório de análises", hl: "accent3" },
+          { text: " — muito disso usando " },
+          { text: "vibecode", hl: "primary" },
+          { text: ", programação assistida por IA que acelera a entrega sem perder o rigor." },
+        ],
+        p3: [
+          { text: "Agora cursando " },
+          { text: "MBA em Inteligência Artificial", hl: "primary" },
+          { text: " para levar P&D para o próximo nível: agentes, visão, dados e automação inteligente." },
+        ],
         prompt: "$ _",
       },
       nameplate: "clegivaldo.exe",
@@ -419,9 +437,27 @@ export const dictionary = {
       terminal: {
         user: "clegivaldo@portfolio: ~/whoami",
         cat: "$ cat profile.md",
-        p1: "I'm Clegivaldo Cruz — a computer engineer, technician in systems development and IT. A self-proclaimed nerd, fueled by coffee and curiosity.",
-        p2: "I currently work as an R&D Manager, connecting engineering, product and business. I've built web systems for a metrology company and an analysis lab — much of it using vibecode, AI-assisted programming that speeds up delivery without losing rigor.",
-        p3: "Now pursuing an MBA in Artificial Intelligence to take R&D to the next level: agents, vision, data and intelligent automation.",
+        p1: [
+          { text: "I'm " },
+          { text: "Clegivaldo Cruz", hl: "primary" },
+          { text: " — a computer engineer, technician in systems development and IT. A self-proclaimed nerd, fueled by coffee and curiosity." },
+        ],
+        p2: [
+          { text: "I currently work as an " },
+          { text: "R&D Manager", hl: "accent2" },
+          { text: ", connecting engineering, product and business. I've built web systems for a " },
+          { text: "metrology company", hl: "accent3" },
+          { text: " and an " },
+          { text: "analysis lab", hl: "accent3" },
+          { text: " — much of it using " },
+          { text: "vibecode", hl: "primary" },
+          { text: ", AI-assisted programming that speeds up delivery without losing rigor." },
+        ],
+        p3: [
+          { text: "Now pursuing an " },
+          { text: "MBA in Artificial Intelligence", hl: "primary" },
+          { text: " to take R&D to the next level: agents, vision, data and intelligent automation." },
+        ],
         prompt: "$ _",
       },
       nameplate: "clegivaldo.exe",

@@ -273,3 +273,25 @@ Work Log:
 Stage Summary:
 - Hydration error fully resolved via useSyncExternalStore. SSR always renders "pt"; the client hydrates with "pt" (matching), then React transitions to the persisted/browser language without any mismatch error.
 - Language switching (PT/EN toggle, localStorage persistence, browser detection, cross-tab sync) all still work correctly.
+
+---
+Task ID: 7
+Agent: main (orchestrator)
+Task: Fix elements disappearing on language switch + restore colored word highlights in the "$ cat profile.md" terminal bio.
+
+Work Log:
+- **Root cause of disappearing elements**: all `.map()` calls used text-based React keys (e.g. `key={c.title}`, `key={item.title}`, `key={s.role}`). When the language switched, the text changed → the key changed → React unmounted the old component and mounted a new one. The new `StaggerItem` started at `initial="hidden"` (opacity 0), but its parent `StaggerGroup` had already fired `whileInView` with `once: true` and wouldn't re-fire → the new children stayed invisible.
+- **Fix**: changed ALL text-based keys to index-based keys (`key={i}` / `key={j}`) across hero, about, skills, experience, projects, education. Since array order and length are identical in both languages, index keys are stable and correct — React updates the text in place without remounting, so animations stay in their "show" state.
+- **Restoring colored bio highlights**: the i18n refactor had flattened the terminal bio into plain strings, losing the colored spans. Fixed by:
+  • Expanding the `Segment` type: `hl?: "fg" | "primary" | "accent2" | "accent3"` (was only `"fg" | "primary"`).
+  • Converting `terminal.p1/p2/p3` from `string` to `Segment[]` arrays in BOTH pt and en dictionaries, with highlight markers: "Clegivaldo Cruz"→primary(green), "Gerente de Pesquisa & Desenvolvimento"/"R&D Manager"→accent2(cyan), "empresa de metrologia"/"metrology company" + "laboratório de análises"/"analysis lab"→accent3(amber), "vibecode"→primary(green), "MBA em Inteligência Artificial"/"MBA in Artificial Intelligence"→primary(green).
+  • Adding a `SegmentedText` component in about.tsx that maps segments to `<span>` with the corresponding color class (`SEGMENT_COLOR` lookup table).
+- Verified with Agent Browser + VLM:
+  • PT→EN→PT toggle: all 4 skills cards, 4 experience steps, 4 project cards, 4 education cards remain visible (h3 count = 4 in both languages, 0 opacity-0 elements).
+  • PT bio shows colored highlights: "Clegivaldo Cruz"(green), "Gerente de Pesquisa & Desenvolvimento"(cyan), "empresa de metrologia"(amber), "laboratório de análises"(amber), "vibecode"(green), "MBA em Inteligência Artificial"(green) — confirmed by VLM.
+  • EN bio also shows colored highlights with the equivalent English terms.
+  • No console errors, no hydration errors, `bun run lint` clean.
+
+Stage Summary:
+- Disappearing-elements bug fully fixed via index-based React keys (no remount on language change → no stuck hidden state).
+- Colored word highlights in the terminal bio restored in both PT and EN, matching the pre-i18n design with green/cyan/amber accents on key terms.

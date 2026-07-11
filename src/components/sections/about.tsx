@@ -6,8 +6,28 @@ import { Reveal, StaggerGroup, StaggerItem } from "@/components/primitives/revea
 import { NumberTicker } from "@/components/primitives/number-ticker"
 import { Coffee, Heart, Lightbulb, Rocket } from "lucide-react"
 import { useLanguage } from "@/components/providers/language-provider"
+import type { Segment } from "@/lib/i18n/dictionaries"
 
 const TRAIT_ICONS = [Lightbulb, Rocket, Coffee, Heart]
+
+const SEGMENT_COLOR: Record<NonNullable<Segment["hl"]>, string> = {
+  fg: "text-foreground",
+  primary: "text-primary",
+  accent2: "text-accent2",
+  accent3: "text-accent3",
+}
+
+function SegmentedText({ segments }: { segments: readonly Segment[] }) {
+  return (
+    <>
+      {segments.map((seg, i) => (
+        <span key={i} className={seg.hl ? SEGMENT_COLOR[seg.hl] : ""}>
+          {seg.text}
+        </span>
+      ))}
+    </>
+  )
+}
 
 export function About() {
   const { t } = useLanguage()
@@ -47,9 +67,15 @@ export function About() {
                 <p className="text-muted-foreground">
                   <span className="text-primary">{a.terminal.cat}</span>
                 </p>
-                <p className="mt-3 text-foreground/90">{a.terminal.p1}</p>
-                <p className="mt-3 text-foreground/90">{a.terminal.p2}</p>
-                <p className="mt-3 text-foreground/90">{a.terminal.p3}</p>
+                <p className="mt-3 text-foreground/90">
+                  <SegmentedText segments={a.terminal.p1} />
+                </p>
+                <p className="mt-3 text-foreground/90">
+                  <SegmentedText segments={a.terminal.p2} />
+                </p>
+                <p className="mt-3 text-foreground/90">
+                  <SegmentedText segments={a.terminal.p3} />
+                </p>
                 <p className="mt-4 text-muted-foreground">
                   <span className="text-primary">{a.terminal.prompt}</span>{" "}
                   <span className="anim-blink">▋</span>
@@ -60,8 +86,8 @@ export function About() {
 
           {/* fact pills */}
           <StaggerGroup className="grid grid-cols-2 gap-3">
-            {a.facts.map((f) => (
-              <StaggerItem key={f.k}>
+            {a.facts.map((f, i) => (
+              <StaggerItem key={i}>
                 <div className="rounded-xl border border-border/60 bg-elevated/40 px-4 py-3 backdrop-blur">
                   <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     {f.k}
@@ -78,8 +104,8 @@ export function About() {
 
       {/* stats */}
       <StaggerGroup className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {a.stats.map((s) => (
-          <StaggerItem key={s.label}>
+        {a.stats.map((s, i) => (
+          <StaggerItem key={i}>
             <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-elevated/30 p-6 text-center backdrop-blur">
               <div className="font-display text-4xl font-bold text-gradient md:text-5xl">
                 <NumberTicker value={s.v} suffix={s.suffix} />
@@ -97,7 +123,7 @@ export function About() {
         {a.traits.map((tr, i) => {
           const Icon = TRAIT_ICONS[i] ?? Lightbulb
           return (
-            <StaggerItem key={tr.title}>
+            <StaggerItem key={i}>
               <div className="group h-full rounded-2xl border border-border/60 bg-elevated/30 p-5 backdrop-blur transition-colors hover:border-primary/40">
                 <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                   <Icon className="h-5 w-5" />

@@ -44,7 +44,7 @@ export function Education() {
               : "var(--primary)"
           const ongoing = item.status === "cursando"
           return (
-            <StaggerItem key={item.degree} className="h-full">
+            <StaggerItem key={i} className="h-full">
               <MagicCard className="relative h-full p-6">
                 {i === 3 && (
                   <BorderBeam

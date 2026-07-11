@@ -152,9 +152,9 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.56 }}
           className="mt-14 grid w-full max-w-2xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60"
         >
-          {t.hero.stats.map((s) => (
+          {t.hero.stats.map((s, i) => (
             <div
-              key={s.k}
+              key={i}
               className="bg-void/60 px-4 py-4 text-center backdrop-blur"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
