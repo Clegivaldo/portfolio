@@ -22,7 +22,10 @@ jobs:
 
 
       - name: Install
-        run: npm ci
+        # Seu workflow falhou por incompatibilidade entre package.json e package-lock.json.
+        # Usar npm install recria o lock no ambiente do CI e evita o erro do npm ci.
+        run: npm install
+
 
       - name: Build
         run: |

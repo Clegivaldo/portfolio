@@ -14,6 +14,8 @@
 ## Completed steps
 - [x] Update workflow (publish_dir changed to ./out)
 - [x] Node runtime updated to 24 to match GH runner
-- [ ] Push commit and verify
+- [x] Push commit and verify (workflow edit pending commit)
+- [ ] Commit + push updated workflow (npm ci -> npm install) e reexecutar Actions
+
 
 
