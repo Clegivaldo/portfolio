@@ -766,16 +766,9 @@ export const dictionary = {
   },
 } as const
 
-// Dict é o shape estrutural do dicionário (sem literais exatos),
-// para que dictionary["en"] também seja assignável ao tipo.
-type DeepWriteable<T> = T extends object
-  ? { [K in keyof T]: DeepWriteable<T[K]> }
-  : T extends readonly (infer U)[]
-  ? DeepWriteable<U>[]
-  : T extends string
-  ? string
-  : T extends number
-  ? number
-  : T
+// Dict is derived from the structure of pt, but we force it to match our generic needs
+// without destroying literal unions like 'Segments[hl]'.
+export type Dict = typeof dictionary.pt
 
-export type Dict = DeepWriteable<typeof dictionary.pt>
+// To resolve the Context union, we just use the base Dict in LanguageContext
+// and assert type safely there.
