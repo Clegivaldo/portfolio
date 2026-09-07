@@ -766,4 +766,16 @@ export const dictionary = {
   },
 } as const
 
-export type Dict = typeof dictionary.pt
+// Dict é o shape estrutural do dicionário (sem literais exatos),
+// para que dictionary["en"] também seja assignável ao tipo.
+type DeepWriteable<T> = T extends object
+  ? { [K in keyof T]: DeepWriteable<T[K]> }
+  : T extends readonly (infer U)[]
+  ? DeepWriteable<U>[]
+  : T extends string
+  ? string
+  : T extends number
+  ? number
+  : T
+
+export type Dict = DeepWriteable<typeof dictionary.pt>
