@@ -1,108 +1,92 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useMemo } from "react"
 import { useFrame } from "@react-three/fiber"
+import { Text } from "@react-three/drei"
 import * as THREE from "three"
 import { scrollState } from "@/lib/scroll-state"
 
-/**
- * Central hero composition: a counter-rotating wireframe icosahedron +
- * torus-knot + glowing core. Rotation speed, scale and tilt respond to
- * scroll progress so the sculpture "evolves" as the user reads the page.
- */
+const SYMBOLS = [
+  "{ }", "< />", "=>", "TS", "[]", "&&", "git", "console", "() =>", "P&D"
+]
+
+function FloatingSymbol({ 
+  text, 
+  position, 
+  color, 
+  speed,
+  scale = 1
+}: { 
+  text: string, 
+  position: [number, number, number], 
+  color: string, 
+  speed: number,
+  scale?: number
+}) {
+  const ref = useRef<THREE.Group>(null)
+  const offset = useMemo(() => Math.random() * Math.PI * 2, [])
+  
+  useFrame((state, delta) => {
+    if (!ref.current) return
+    const t = state.clock.elapsedTime
+    ref.current.position.y += Math.sin(t * speed + offset) * 0.005
+    ref.current.rotation.y += delta * speed * 0.2
+    ref.current.rotation.z = Math.sin(t * speed * 0.5 + offset) * 0.1
+  })
+
+  return (
+    <group ref={ref} position={position} scale={scale}>
+      <Text
+        color={color}
+        fontSize={0.6}
+        maxWidth={200}
+        lineHeight={1}
+        letterSpacing={0.02}
+        textAlign="left"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.015}
+        outlineColor={color}
+        fillOpacity={0.4}
+        outlineOpacity={0.8}
+        font="https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTOlOV.woff"
+      >
+        {text}
+      </Text>
+    </group>
+  )
+}
+
 export function HeroShapes() {
   const group = useRef<THREE.Group>(null)
-  const ico = useRef<THREE.Mesh>(null)
-  const knot = useRef<THREE.Mesh>(null)
-  const octa = useRef<THREE.Mesh>(null)
-  const core = useRef<THREE.Mesh>(null)
-  const ring = useRef<THREE.Mesh>(null)
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const t = state.clock.elapsedTime
     const p = scrollState.progress
 
     if (group.current) {
-      // lift & sway with scroll
-      group.current.position.y = -p * 0.6 + Math.sin(t * 0.4) * 0.1
-      group.current.rotation.y = p * Math.PI * 0.8
-      group.current.rotation.x = Math.sin(t * 0.3) * 0.12 + p * 0.3
-      const s = 1 + p * 0.15
+      // scroll interaction: subtle tilt & lift
+      group.current.position.y = -p * 1.5 + Math.sin(t * 0.2) * 0.1
+      group.current.rotation.x = Math.sin(t * 0.3) * 0.05 + p * 0.1
+      const s = 1 + p * 0.2
       group.current.scale.setScalar(s)
-    }
-
-    if (ico.current) {
-      ico.current.rotation.x += delta * 0.18
-      ico.current.rotation.y += delta * 0.22
-    }
-    if (knot.current) {
-      knot.current.rotation.x -= delta * 0.14
-      knot.current.rotation.z += delta * 0.2
-    }
-    if (octa.current) {
-      octa.current.rotation.y += delta * 0.35
-      octa.current.rotation.z -= delta * 0.18
-    }
-    if (ring.current) {
-      ring.current.rotation.z += delta * 0.12
-      ring.current.rotation.x = Math.PI / 2.2 + Math.sin(t * 0.3) * 0.1
-    }
-    if (core.current) {
-      const m = core.current.material as THREE.MeshStandardMaterial
-      const pulse = 0.6 + Math.sin(t * 1.6) * 0.25
-      m.emissiveIntensity = pulse + p * 0.4
-      core.current.scale.setScalar(0.9 + Math.sin(t * 1.2) * 0.05)
+      group.current.rotation.y = Math.sin(t * 0.1) * 0.1 + p * 0.2
     }
   })
 
   return (
     <group ref={group}>
-      {/* outer wireframe icosahedron */}
-      <mesh ref={ico}>
-        <icosahedronGeometry args={[2.2, 1]} />
-        <meshBasicMaterial
-          color="#34d399"
-          wireframe
-          transparent
-          opacity={0.5}
-        />
-      </mesh>
-
-      {/* mid torus knot */}
-      <mesh ref={knot} scale={0.95}>
-        <torusKnotGeometry args={[1.4, 0.16, 180, 24, 2, 3]} />
-        <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.42} />
-      </mesh>
-
-      {/* orbiting octahedron */}
-      <mesh ref={octa} position={[2.6, 0.5, -0.5]} scale={0.32}>
-        <octahedronGeometry args={[1, 0]} />
-        <meshBasicMaterial color="#fbbf24" wireframe transparent opacity={0.8} />
-      </mesh>
-
-      {/* thin orbit ring */}
-      <mesh ref={ring} scale={3.1}>
-        <torusGeometry args={[1, 0.008, 8, 120]} />
-        <meshBasicMaterial color="#34d399" transparent opacity={0.45} />
-      </mesh>
-
-      {/* glowing core */}
-      <mesh ref={core}>
-        <sphereGeometry args={[0.34, 32, 32]} />
-        <meshStandardMaterial
-          color="#a7f3d0"
-          emissive="#34d399"
-          emissiveIntensity={1.2}
-          roughness={0.2}
-          metalness={0.1}
-        />
-      </mesh>
-
-      {/* inner faint glow sphere */}
-      <mesh scale={0.7}>
-        <sphereGeometry args={[0.5, 24, 24]} />
-        <meshBasicMaterial color="#34d399" transparent opacity={0.08} />
-      </mesh>
+      {/* 
+        A constellation of programming symbols in 3D space 
+        Using theme colors: #34d399 (emerald), #22d3ee (cyan), #fbbf24 (amber)
+      */}
+      <FloatingSymbol text="{ }" position={[-1.8, 0.5, 0]} color="#34d399" speed={0.8} scale={1.8} />
+      <FloatingSymbol text="< />" position={[1.5, -0.2, 0.5]} color="#22d3ee" speed={0.6} scale={1.5} />
+      <FloatingSymbol text="=>" position={[-0.8, -1.2, 1.2]} color="#fbbf24" speed={1.1} scale={1.2} />
+      <FloatingSymbol text="TS" position={[2.2, 1.2, -0.5]} color="#34d399" speed={0.7} scale={1} />
+      <FloatingSymbol text="[]" position={[-2.5, -0.5, -1]} color="#22d3ee" speed={0.9} scale={1.4} />
+      <FloatingSymbol text="git" position={[0.5, 1.5, -1.5]} color="#fbbf24" speed={0.5} scale={1.2} />
+      <FloatingSymbol text="&&" position={[-0.2, 0.8, 1.5]} color="#34d399" speed={1.2} scale={1.1} />
     </group>
   )
 }

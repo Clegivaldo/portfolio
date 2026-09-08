@@ -1,4 +1,5 @@
 "use client"
+import { TerminalEffect } from "@/components/ui/terminal-effect"
 
 import { SectionHeading } from "@/components/primitives/section-heading"
 import { TiltPhoto } from "@/components/primitives/tilt-photo"
@@ -64,22 +65,17 @@ export function About() {
                 </span>
               </div>
               <div className="p-5 font-mono text-sm leading-relaxed">
-                <p className="text-muted-foreground">
-                  <span className="text-primary">{a.terminal.cat}</span>
-                </p>
-                <p className="mt-3 text-foreground/90">
-                  <SegmentedText segments={a.terminal.p1} />
-                </p>
-                <p className="mt-3 text-foreground/90">
-                  <SegmentedText segments={a.terminal.p2} />
-                </p>
-                <p className="mt-3 text-foreground/90">
-                  <SegmentedText segments={a.terminal.p3} />
-                </p>
-                <p className="mt-4 text-muted-foreground">
-                  <span className="text-primary">{a.terminal.prompt}</span>{" "}
-                  <span className="anim-blink">▋</span>
-                </p>
+                <TerminalEffect command={a.terminal.cat} prompt={a.terminal.prompt}>
+                  <p className="mt-3 text-foreground/90">
+                    <SegmentedText segments={a.terminal.p1} />
+                  </p>
+                  <p className="mt-3 text-foreground/90">
+                    <SegmentedText segments={a.terminal.p2} />
+                  </p>
+                  <p className="mt-3 text-foreground/90">
+                    <SegmentedText segments={a.terminal.p3} />
+                  </p>
+                </TerminalEffect>
               </div>
             </div>
           </Reveal>

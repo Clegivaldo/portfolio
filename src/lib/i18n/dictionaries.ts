@@ -90,7 +90,7 @@ export const dictionary = {
       ],
       stats: [
         { v: 8, suffix: "+", label: "anos com tecnologia" },
-        { v: 20, suffix: "+", label: "sistemas entregues" },
+        { v: 3, suffix: "+", label: "sistemas entregues" },
         { v: 3, suffix: "", label: "diplomas / técnicos" },
         { v: 100, suffix: "%", label: "nerd assumido" },
       ],
@@ -469,7 +469,7 @@ export const dictionary = {
       ],
       stats: [
         { v: 8, suffix: "+", label: "years in tech" },
-        { v: 20, suffix: "+", label: "systems shipped" },
+        { v: 3, suffix: "+", label: "systems shipped" },
         { v: 3, suffix: "", label: "degrees / tech diplomas" },
         { v: 100, suffix: "%", label: "self-proclaimed nerd" },
       ],
