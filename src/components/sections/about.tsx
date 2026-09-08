@@ -17,7 +17,7 @@ const SEGMENT_COLOR: Record<NonNullable<Segment["hl"]>, string> = {
   accent3: "text-accent3",
 }
 
-function SegmentedText({ segments }: { segments: readonly Segment[] }) {
+function SegmentedText({ segments }: { segments: readonly any[] }) {
   return (
     <>
       {segments.map((seg, i) => (

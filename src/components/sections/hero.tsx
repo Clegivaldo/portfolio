@@ -6,7 +6,7 @@ import { Magnetic } from "@/components/primitives/magnetic"
 import { ChevronDown, Terminal, Cpu, Sparkles } from "lucide-react"
 import { useLanguage } from "@/components/providers/language-provider"
 
-function useRotator(words: string[], interval = 2600) {
+function useRotator(words: readonly string[], interval = 2600) {
   const [i, setI] = useState(0)
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % words.length), interval)
