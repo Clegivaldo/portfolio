@@ -11,6 +11,8 @@ import { useRef, type MouseEvent } from "react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
+import originalImg from "../../../public/profile/original.png"
+
 /**
  * "Sensational" portrait treatment:
  *  - hexagon mask (not square)
@@ -109,7 +111,7 @@ export function TiltPhoto({
         {/* portrait image */}
         <div className="absolute inset-[3px] clip-hex overflow-hidden">
           <Image
-            src="/profile/portrait.avif"
+            src={originalImg}
             alt="Clegivaldo Cruz — Engenheiro de Computação"
             fill
             sizes={`${size}px`}
