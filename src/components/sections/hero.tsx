@@ -102,18 +102,20 @@ export function Hero() {
           className="mx-auto mt-8 max-w-2xl text-balance text-base leading-relaxed text-foreground/75 sm:text-lg"
         >
           {t.hero.pitch.map((seg, i) => {
-            if (seg.hl === "primary")
+            if ("hl" in seg && seg.hl === "primary") {
               return (
                 <span key={i} className="text-primary">
                   {seg.text}
                 </span>
               )
-            if (seg.hl === "fg")
+            }
+            if ("hl" in seg && seg.hl === "fg") {
               return (
                 <span key={i} className="text-foreground">
                   {seg.text}
                 </span>
               )
+            }
             return <span key={i}>{seg.text}</span>
           })}
         </motion.p>
