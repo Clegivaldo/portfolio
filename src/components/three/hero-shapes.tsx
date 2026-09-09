@@ -1,92 +1,121 @@
 "use client"
 
-import { useRef, useMemo } from "react"
+import { useRef } from "react"
 import { useFrame } from "@react-three/fiber"
-import { Text } from "@react-three/drei"
 import * as THREE from "three"
 import { scrollState } from "@/lib/scroll-state"
 
-const SYMBOLS = [
-  "{ }", "< />", "=>", "TS", "[]", "&&", "git", "console", "() =>", "P&D"
-]
-
-function FloatingSymbol({ 
-  text, 
+function CodeLine({ 
   position, 
+  width, 
   color, 
   speed,
-  scale = 1
+  delayOffset
 }: { 
-  text: string, 
   position: [number, number, number], 
+  width: number, 
   color: string, 
   speed: number,
-  scale?: number
+  delayOffset: number
 }) {
-  const ref = useRef<THREE.Group>(null)
-  const offset = useMemo(() => Math.random() * Math.PI * 2, [])
+  const ref = useRef<THREE.Mesh>(null)
   
   useFrame((state, delta) => {
     if (!ref.current) return
     const t = state.clock.elapsedTime
-    ref.current.position.y += Math.sin(t * speed + offset) * 0.005
-    ref.current.rotation.y += delta * speed * 0.2
-    ref.current.rotation.z = Math.sin(t * speed * 0.5 + offset) * 0.1
+    
+    // Y-axis floating
+    ref.current.position.y += Math.sin(t * speed + delayOffset) * 0.003
+    
+    // Slow orbit rotation
+    ref.current.rotation.y += delta * speed * 0.15
   })
 
   return (
-    <group ref={ref} position={position} scale={scale}>
-      <Text
-        color={color}
-        fontSize={0.6}
-        maxWidth={200}
-        lineHeight={1}
-        letterSpacing={0.02}
-        textAlign="left"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.015}
-        outlineColor={color}
-        fillOpacity={0.4}
-        outlineOpacity={0.8}
-        font="https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTOlOV.woff"
-      >
-        {text}
-      </Text>
-    </group>
+    <mesh ref={ref} position={position}>
+      <boxGeometry args={[width, 0.15, 0.15]} />
+      <meshBasicMaterial color={color} transparent opacity={0.8} />
+    </mesh>
   )
 }
 
 export function HeroShapes() {
   const group = useRef<THREE.Group>(null)
-
+  
   useFrame((state) => {
     const t = state.clock.elapsedTime
     const p = scrollState.progress
 
     if (group.current) {
-      // scroll interaction: subtle tilt & lift
       group.current.position.y = -p * 1.5 + Math.sin(t * 0.2) * 0.1
-      group.current.rotation.x = Math.sin(t * 0.3) * 0.05 + p * 0.1
-      const s = 1 + p * 0.2
-      group.current.scale.setScalar(s)
+      group.current.rotation.x = p * 0.1
       group.current.rotation.y = Math.sin(t * 0.1) * 0.1 + p * 0.2
+      const s = 1 + p * 0.15
+      group.current.scale.setScalar(s)
     }
   })
+
+  // Theme colors
+  const primary = "#34d399"
+  const cyan = "#22d3ee"
+  const amber = "#fbbf24"
 
   return (
     <group ref={group}>
       {/* 
-        A constellation of programming symbols in 3D space 
-        Using theme colors: #34d399 (emerald), #22d3ee (cyan), #fbbf24 (amber)
+        Abstract floating "code blocks".
+        Looks like an IDE source code floating in 3D.
       */}
-      <FloatingSymbol text="{ }" position={[-1.8, 0.5, 0]} color="#34d399" speed={0.8} scale={1.8} />
-      <FloatingSymbol text="< />" position={[1.5, -0.2, 0.5]} color="#22d3ee" speed={0.6} scale={1.5} />
-      <FloatingSymbol text="=>" position={[-0.8, -1.2, 1.2]} color="#fbbf24" speed={1.1} scale={1.2} />
-      <FloatingSymbol text="TS" position={[2.2, 1.2, -0.5]} color="#34d399" speed={0.7} scale={1} />
-      <FloatingSymbol text="[]" position={[-2.5, -0.5, -1]} color="#22d3ee" speed={0.9} scale={1.4} />
-      <FloatingSymbol text="git" position={[0.5, 1.5, -1.5]} color="#fbbf24" speed={0.5} scale={1.2} />
-      <FloatingSymbol text="&&" position={[-0.2, 0.8, 1.5]} color="#34d399" speed={1.2} scale={1.1} />
+      <group position={[-1.5, 0.5, 0]}>
+        <CodeLine position={[0, 0, 0]} width={2.5} color={primary} speed={0.8} delayOffset={0} />
+        <CodeLine position={[0.2, -0.4, 0]} width={1.8} color={cyan} speed={0.8} delayOffset={1} />
+        <CodeLine position={[-0.1, -0.8, 0]} width={2.2} color={primary} speed={0.8} delayOffset={2} />
+      </group>
+
+      <group position={[1.5, -0.5, 0.5]} rotation={[0, -0.5, 0]}>
+        <CodeLine position={[0, 0, 0]} width={1.5} color={amber} speed={1.1} delayOffset={3} />
+        <CodeLine position={[0.3, -0.4, 0]} width={2.8} color={primary} speed={1.1} delayOffset={4} />
+      </group>
+
+      <group position={[0, -1.8, -1]} rotation={[0, 0.4, 0]}>
+        <CodeLine position={[0, 0, 0]} width={3.5} color={cyan} speed={0.6} delayOffset={5} />
+      </group>
+
+      <group position={[-2, -1.5, -0.5]} rotation={[0, 0.2, 0.2]}>
+        <CodeLine position={[0, 0, 0]} width={1.2} color={amber} speed={0.9} delayOffset={6} />
+      </group>
+
+      <group position={[2.5, 1.2, -1]} rotation={[-0.2, -0.2, 0]}>
+        <CodeLine position={[0, 0, 0]} width={2.0} color={cyan} speed={0.7} delayOffset={7} />
+        <CodeLine position={[0.2, -0.4, 0]} width={1.5} color={amber} speed={0.7} delayOffset={8} />
+        <CodeLine position={[-0.3, -0.8, 0]} width={3.1} color={primary} speed={0.7} delayOffset={9} />
+      </group>
+
+      {/* Central glowing core / node */}
+      <mesh position={[0, 0, -1]}>
+        <icosahedronGeometry args={[0.8, 1]} />
+        <meshBasicMaterial color={cyan} wireframe transparent opacity={0.6} />
+      </mesh>
+
+      {/* Add a generic terminal-like window outline frame to give programming feel */}
+      <group position={[0, 0, -2]}>
+         <mesh position={[0, 3, 0]}>
+           <boxGeometry args={[8, 0.1, 0.1]} />
+           <meshBasicMaterial color={primary} transparent opacity={0.3} />
+         </mesh>
+         <mesh position={[0, -3, 0]}>
+           <boxGeometry args={[8, 0.1, 0.1]} />
+           <meshBasicMaterial color={primary} transparent opacity={0.3} />
+         </mesh>
+         <mesh position={[-4, 0, 0]}>
+           <boxGeometry args={[0.1, 6, 0.1]} />
+           <meshBasicMaterial color={primary} transparent opacity={0.3} />
+         </mesh>
+         <mesh position={[4, 0, 0]}>
+           <boxGeometry args={[0.1, 6, 0.1]} />
+           <meshBasicMaterial color={primary} transparent opacity={0.3} />
+         </mesh>
+      </group>
     </group>
   )
 }
