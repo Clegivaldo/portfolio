@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
-import { Toaster } from "@/components/ui/toaster"
 import { SmoothScroll } from "@/components/providers/smooth-scroll"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { LanguageProvider } from "@/components/providers/language-provider"
@@ -27,7 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Clegivaldo Cruz — Engenheiro de Computação & P&D",
   description:
-    "Portfólio de Clegivaldo Cruz: Engenheiro de Computação, Técnico em Desenvolvimento de Sistemas e Informática, cursando MBA em Inteligência Artificial. Gerente de Pesquisa & Desenvolvimento. Nerd, amante de tecnologias.",
+    "Portfólio de Clegivaldo Cruz: Engenheiro de Computação, Técnico em Desenvolvimento de Sistemas e Informática, com MBA em Inteligência Artificial. Gerente de Pesquisa & Desenvolvimento. Nerd, amante de tecnologias.",
   keywords: [
     "Clegivaldo Cruz",
     "Engenheiro de Computação",
@@ -78,7 +77,6 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
             <SmoothScroll>{children}</SmoothScroll>
-            <Toaster />
           </LanguageProvider>
         </ThemeProvider>
       </body>

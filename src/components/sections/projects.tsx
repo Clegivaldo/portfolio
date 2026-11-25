@@ -59,7 +59,7 @@ export function Projects() {
           return (
             <StaggerItem key={i} className="h-full">
               <MagicCard className="h-full">
-                {item.featured && <BorderBeam duration={8} />}
+                {i === 0 && item.featured && <BorderBeam duration={11} />}
                 <Preview kind={kind} accent={accent} t={t} />
 
                 <div className="p-6">
@@ -234,7 +234,7 @@ function MetrologyPreview({ accent, t }: { accent: string; t: Dict }) {
         ))}
       </div>
       <div className="rounded-md border border-border/50 bg-void/50 p-2">
-        <div className="flex items-end gap-1.5">
+        <div className="flex h-14 items-end gap-1.5">
           {[40, 65, 50, 80, 55, 90, 70, 95, 60, 85, 75, 100].map((h, i) => (
             <motion.div
               key={i}
@@ -290,11 +290,9 @@ function LabPreview({ accent, t }: { accent: string; t: Dict }) {
           ))}
         </div>
         <div className="flex flex-col items-center justify-center rounded-md border border-border/50 bg-void/50 p-3">
-          <motion.div
-            className="h-12 w-12 rounded-full border-2 border-dashed"
+          <div
+            className="h-12 w-12 rounded-full border-2 border-dashed [animation:border-beam-spin_9s_linear_infinite]"
             style={{ borderColor: accent }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           />
           <div className="mt-2 font-mono text-[8px] text-muted-foreground">
             {realtime}
@@ -308,33 +306,31 @@ function LabPreview({ accent, t }: { accent: string; t: Dict }) {
 function PortfolioPreview({ accent }: { accent: string }) {
   return (
     <div className="relative flex h-full items-center justify-center">
-      <motion.div
-        className="absolute h-20 w-20 rounded-full border"
+      <div
+        className="absolute h-20 w-20 rounded-full border [animation:border-beam-spin_14s_linear_infinite]"
         style={{ borderColor: `color-mix(in oklab, ${accent} 50%, transparent)` }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       />
-      <motion.div
-        className="absolute h-14 w-14 rounded-md border-2"
+      <div
+        className="absolute h-14 w-14 rounded-md border-2 [animation:border-beam-spin_10s_linear_infinite_reverse]"
         style={{ borderColor: accent }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
       />
       <div
         className="h-3 w-3 rounded-full"
         style={{ background: accent, boxShadow: `0 0 20px ${accent}` }}
       />
       {["{", "}", "</>", "01", "AI"].map((g, i) => (
-        <motion.span
+        <span
           key={i}
-          className="absolute font-mono text-[10px]"
-          style={{ color: `color-mix(in oklab, ${accent} 70%, #fff)` }}
-          animate={{ y: [0, -8, 0], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}
-          initial={{ x: `${(i - 2) * 30 - 10}px`, y: `${(i % 2 ? 1 : -1) * 22}px` }}
+          className="anim-float absolute font-mono text-[10px]"
+          style={{
+            color: `color-mix(in oklab, ${accent} 70%, #fff)`,
+            left: `${50 + (i - 2) * 14}%`,
+            top: i % 2 ? "64%" : "26%",
+            animationDelay: `${i * 0.4}s`,
+          }}
         >
           {g}
-        </motion.span>
+        </span>
       ))}
     </div>
   )
@@ -353,26 +349,19 @@ function AiPreview({ accent, t }: { accent: string; t: Dict }) {
       <div className="flex flex-1 items-center justify-center gap-2">
         {["input", "agent", "tool", "output"].map((n, i) => (
           <div key={n} className="flex items-center gap-2">
-            <motion.div
+            <div
               className="rounded-md border border-border/50 bg-void/60 px-2 py-1.5 font-mono text-[8px]"
-              style={{ color: i === 1 ? accent : "var(--foreground)" }}
-              animate={{
-                boxShadow: [
-                  "0 0 0 0 rgba(52,211,153,0)",
-                  "0 0 12px 1px rgba(52,211,153,0.55)",
-                  "0 0 0 0 rgba(52,211,153,0)",
-                ],
+              style={{
+                color: i === 1 ? accent : "var(--foreground)",
+                boxShadow: i === 1 ? `0 0 12px 1px color-mix(in oklab, ${accent} 55%, transparent)` : undefined,
               }}
-              transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
             >
               {n}
-            </motion.div>
+            </div>
             {i < 3 && (
-              <motion.div
-                className="h-px w-3"
-                style={{ background: accent }}
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.4 }}
+              <div
+                className="animate-pulse h-px w-3"
+                style={{ background: accent, animationDelay: `${i * 0.4}s` }}
               />
             )}
           </div>

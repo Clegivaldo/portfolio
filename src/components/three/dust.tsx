@@ -3,12 +3,19 @@
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { scrollState } from "@/lib/scroll-state"
+import {
+  motionAmount,
+  motionScale,
+  prefersReducedMotion,
+} from "@/lib/scroll-state"
 
 /**
  * Ambient point-dust for atmosphere. Implemented as a single Points cloud
  * with additive blending for a soft glow.
  */
+/** Slightly dimmer when the visitor prefers less motion. */
+const baseOpacity = prefersReducedMotion ? 0.4 : 0.55
+
 export function Dust({ count = 800 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null)
 
@@ -36,10 +43,12 @@ export function Dust({ count = 800 }: { count?: number }) {
 
   useFrame((state, delta) => {
     if (!ref.current) return
-    ref.current.rotation.y += delta * 0.015
-    ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.05
+    const t = state.clock.elapsedTime
+    ref.current.rotation.y += delta * 0.015 * motionScale
+    ref.current.rotation.x = Math.sin(t * 0.05 * motionScale) * 0.05 * motionAmount
     const mat = ref.current.material as THREE.PointsMaterial
-    mat.opacity = 0.55 + Math.sin(state.clock.elapsedTime * 0.6) * 0.08
+    mat.opacity =
+      baseOpacity + Math.sin(t * 0.6 * motionScale) * 0.08 * motionAmount
   })
 
   return (
@@ -53,7 +62,7 @@ export function Dust({ count = 800 }: { count?: number }) {
         sizeAttenuation
         vertexColors
         transparent
-        opacity={0.6}
+        opacity={baseOpacity}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
       />

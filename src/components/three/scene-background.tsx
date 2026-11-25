@@ -1,8 +1,7 @@
 "use client"
 
 import { Canvas } from "@react-three/fiber"
-import { EffectComposer, Bloom, Vignette, ChromaticAberration } from "@react-three/postprocessing"
-import { BlendFunction } from "postprocessing"
+import { EffectComposer, Bloom } from "@react-three/postprocessing"
 import { Suspense, useMemo } from "react"
 import * as THREE from "three"
 import { CodeField } from "./code-field"
@@ -12,11 +11,27 @@ import { Dust } from "./dust"
 import { ScrollRig } from "./scroll-rig"
 
 /**
+ * Small screens and modest CPUs get a lighter scene: no extra geometry and no
+ * post-processing. A bloom pass at high dpr is what makes WebGL feel heavy on
+ * phones, while the code glyphs + dust still carry the look.
+ *
+ * Visitors who prefer reduced motion still get the animated scene — it runs
+ * slower and with less travel (see `motionScale` / `motionAmount`), never frozen.
+ */
+function detectTier(): "high" | "low" {
+  if (typeof window === "undefined") return "high"
+  const small = window.matchMedia("(max-width: 820px)").matches
+  const cores = navigator.hardwareConcurrency ?? 8
+  return small || cores <= 4 ? "low" : "high"
+}
+
+/**
  * Fixed full-viewport WebGL canvas that lives behind all page content.
  * The whole scene reacts to page scroll via the shared `scrollState`.
  */
 export function SceneBackground() {
-  const caOffset = useMemo(() => new THREE.Vector2(0.0006, 0.0009), [])
+  const low = useMemo(() => detectTier() === "low", [])
+
   return (
     <div
       className="fixed inset-0 z-0 pointer-events-none"
@@ -24,11 +39,12 @@ export function SceneBackground() {
       style={{ background: "radial-gradient(ellipse at 50% 30%, #0c1220 0%, #050609 60%, #03040680 100%)" }}
     >
       <Canvas
-        dpr={[1, 2]}
+        dpr={low ? [1, 1.2] : [1, 1.6]}
         gl={{
-          antialias: true,
+          // the composer renders to its own target, so canvas MSAA only costs
+          antialias: false,
           alpha: true,
-          powerPreference: "high-performance",
+          powerPreference: low ? "default" : "high-performance",
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.05,
         }}
@@ -37,44 +53,33 @@ export function SceneBackground() {
         <color attach="background" args={["#05060a"]} />
         <fog attach="fog" args={["#05060a", 14, 38]} />
 
-        <ambientLight intensity={0.35} />
-        <pointLight position={[6, 6, 6]} intensity={1.4} color="#34d399" />
-        <pointLight position={[-6, -4, 4]} intensity={1.0} color="#22d3ee" />
-        <pointLight position={[0, 0, -8]} intensity={0.7} color="#fbbf24" />
-
         <Suspense fallback={null}>
           <ScrollRig />
-          <Dust count={700} />
-          <CodeField count={34} />
-          <HeroShapes />
-          <BrowserDeploy />
+          <Dust count={low ? 220 : 480} />
+          <CodeField count={low ? 12 : 22} />
+          {!low && <HeroShapes />}
+          {!low && <BrowserDeploy />}
         </Suspense>
 
-        <EffectComposer multisampling={0}>
-          <Bloom
-            intensity={0.85}
-            luminanceThreshold={0.18}
-            luminanceSmoothing={0.5}
-            mipmapBlur
-            radius={0.7}
-          />
-          <ChromaticAberration
-            blendFunction={BlendFunction.NORMAL}
-            offset={caOffset}
-            radialModulation={false}
-            modulationOffset={0}
-          />
-          <Vignette eskil={false} offset={0.25} darkness={0.85} />
-        </EffectComposer>
+        {!low && (
+          <EffectComposer multisampling={0}>
+            <Bloom
+              intensity={0.7}
+              luminanceThreshold={0.2}
+              luminanceSmoothing={0.5}
+              mipmapBlur
+              radius={0.65}
+            />
+          </EffectComposer>
+        )}
       </Canvas>
 
-      {/* CSS overlays for depth & legibility */}
-      <div className="absolute inset-0 bg-noise opacity-[0.04] mix-blend-overlay" />
+      {/* legibility + depth overlay (plain alpha, cheap to composite) */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 55% at 50% 38%, transparent 0%, rgba(5,6,10,0.55) 70%, rgba(5,6,10,0.85) 100%)",
+            "radial-gradient(ellipse 80% 55% at 50% 38%, transparent 0%, rgba(5,6,10,0.55) 70%, rgba(5,6,10,0.88) 100%)",
         }}
       />
     </div>

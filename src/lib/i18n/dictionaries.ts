@@ -27,7 +27,7 @@ export const dictionary = {
         "Técnico em Desenvolvimento de Sistemas",
         "Técnico em Informática",
         "Gerente de Pesquisa & Desenvolvimento",
-        "Cursando MBA em Inteligência Artificial",
+        "MBA em Inteligência Artificial",
       ],
       pitch: [
         { text: "Nerd assumido, amante de tecnologias e construtor de sistemas que resolvem problemas reais. Lidero " },
@@ -45,7 +45,7 @@ export const dictionary = {
       stats: [
         { k: "formação", v: "Eng. Computação + 2 técnicos" },
         { k: "cargo atual", v: "Gerente de P&D" },
-        { k: "now", v: "MBA · IA" },
+        { k: "pós-graduação", v: "MBA em IA" },
       ],
       scroll: "scroll",
     },
@@ -75,9 +75,9 @@ export const dictionary = {
           { text: ", programação assistida por IA que acelera a entrega sem perder o rigor." },
         ],
         p3: [
-          { text: "Agora cursando " },
+          { text: "Concluí o " },
           { text: "MBA em Inteligência Artificial", hl: "primary" },
-          { text: " para levar P&D para o próximo nível: agentes, visão, dados e automação inteligente." },
+          { text: " e agora levo P&D para o próximo nível: agentes, visão, dados e automação inteligente." },
         ],
         prompt: "$ _",
       },
@@ -85,7 +85,7 @@ export const dictionary = {
       facts: [
         { k: "formação", v: "Eng. Computação + 2 técnicos" },
         { k: "cargo atual", v: "Gerente de P&D" },
-        { k: "pós", v: "MBA em IA (cursando)" },
+        { k: "pós", v: "MBA em IA (concluído)" },
         { k: "base", v: "Brasil · remoto / híbrido" },
       ],
       stats: [
@@ -213,10 +213,10 @@ export const dictionary = {
           tags: ["Lógica", "Redes", "Infra"],
         },
         {
-          period: "Em curso",
+          period: "Concluído",
           role: "MBA em Inteligência Artificial",
           org: "Pós-graduação · IA aplicada",
-          current: true,
+          current: false,
           points: [
             "Aprofundando LLMs, agents, visão computacional e dados.",
             "Levando P&D para o próximo nível: automação inteligente e produtos com IA.",
@@ -269,8 +269,8 @@ export const dictionary = {
           desc: "Este próprio portfólio: cena 3D scroll-driven com partículas de código, geometrias wireframe e a metáfora de um sistema sendo feito deploy.",
           highlights: [
             "Cena 3D reage ao scroll com Three.js + React Three Fiber",
-            "Smooth scroll com Lenis e parallax com Framer Motion",
-            "Pós-processamento com Bloom, vignette e aberração cromática",
+            "Smooth scroll com Lenis e parallax de scroll + ponteiro",
+            "Bloom com tier de qualidade por dispositivo, sem pesar no mobile",
             "Animações responsivas e acessíveis (prefers-reduced-motion)",
           ],
           stack: ["Next.js 16", "Three.js", "R3F", "GSAP", "Lenis"],
@@ -323,7 +323,7 @@ export const dictionary = {
       label: "Formação",
       title: { pre: "Quatro camadas de", hl: "aprendizado", post: "." },
       description:
-        "Graduação, dois técnicos e agora um MBA em IA — formação contínua é parte do jeito nerd de ver o mundo.",
+        "Graduação, dois técnicos e o MBA em IA recém-concluído — formação contínua é parte do jeito nerd de ver o mundo.",
       items: [
         {
           degree: "Engenharia de Computação",
@@ -346,7 +346,7 @@ export const dictionary = {
         {
           degree: "MBA em Inteligência Artificial",
           field: "Pós-graduação · IA",
-          status: "cursando",
+          status: "concluído",
           detail: "LLMs, agents, visão computacional e dados — levando P&D para produtos com IA.",
         },
       ],
@@ -406,7 +406,7 @@ export const dictionary = {
         "Systems Development Technician",
         "IT Technician",
         "R&D Manager",
-        "Pursuing an MBA in Artificial Intelligence",
+        "MBA in Artificial Intelligence",
       ],
       pitch: [
         { text: "Self-proclaimed nerd, tech lover and builder of systems that solve real problems. I lead " },
@@ -424,7 +424,7 @@ export const dictionary = {
       stats: [
         { k: "degree", v: "Computer Eng. + 2 tech" },
         { k: "current role", v: "R&D Manager" },
-        { k: "now", v: "MBA · AI" },
+        { k: "postgrad", v: "MBA in AI" },
       ],
       scroll: "scroll",
     },
@@ -454,9 +454,9 @@ export const dictionary = {
           { text: ", AI-assisted programming that speeds up delivery without losing rigor." },
         ],
         p3: [
-          { text: "Now pursuing an " },
+          { text: "I completed the " },
           { text: "MBA in Artificial Intelligence", hl: "primary" },
-          { text: " to take R&D to the next level: agents, vision, data and intelligent automation." },
+          { text: " and I'm now taking R&D to the next level: agents, vision, data and intelligent automation." },
         ],
         prompt: "$ _",
       },
@@ -464,7 +464,7 @@ export const dictionary = {
       facts: [
         { k: "degree", v: "Computer Eng. + 2 tech" },
         { k: "current role", v: "R&D Manager" },
-        { k: "postgrad", v: "MBA in AI (ongoing)" },
+        { k: "postgrad", v: "MBA in AI (completed)" },
         { k: "based in", v: "Brazil · remote / hybrid" },
       ],
       stats: [
@@ -592,10 +592,10 @@ export const dictionary = {
           tags: ["Logic", "Networks", "Infra"],
         },
         {
-          period: "In progress",
+          period: "Completed",
           role: "MBA in Artificial Intelligence",
           org: "Postgraduate · Applied AI",
-          current: true,
+          current: false,
           points: [
             "Deepening LLMs, agents, computer vision and data.",
             "Taking R&D to the next level: intelligent automation and AI-powered products.",
@@ -648,8 +648,8 @@ export const dictionary = {
           desc: "This very portfolio: a scroll-driven 3D scene with code particles, wireframe geometries and the metaphor of a system being deployed.",
           highlights: [
             "3D scene reacts to scroll with Three.js + React Three Fiber",
-            "Smooth scroll with Lenis and parallax with Framer Motion",
-            "Post-processing with Bloom, vignette and chromatic aberration",
+            "Smooth scroll with Lenis and pointer/scroll parallax",
+            "Bloom with a per-device quality tier, so mobile stays smooth",
             "Responsive, accessible animations (prefers-reduced-motion)",
           ],
           stack: ["Next.js 16", "Three.js", "R3F", "GSAP", "Lenis"],
@@ -702,7 +702,7 @@ export const dictionary = {
       label: "Education",
       title: { pre: "Four layers of", hl: "learning", post: "." },
       description:
-        "A degree, two technical diplomas and now an MBA in AI — continuous learning is part of the nerd worldview.",
+        "A degree, two technical diplomas and a freshly completed MBA in AI — continuous learning is part of the nerd worldview.",
       items: [
         {
           degree: "Computer Engineering",
@@ -725,7 +725,7 @@ export const dictionary = {
         {
           degree: "MBA in Artificial Intelligence",
           field: "Postgraduate · AI",
-          status: "cursando",
+          status: "concluído",
           detail: "LLMs, agents, computer vision and data — bringing R&D into AI-powered products.",
         },
       ],

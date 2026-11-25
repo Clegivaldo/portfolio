@@ -8,7 +8,6 @@ import {
 } from "@/components/primitives/reveal"
 import { MagicCard } from "@/components/primitives/magic-card"
 import { BorderBeam } from "@/components/primitives/border-beam"
-import { motion } from "framer-motion"
 import { GraduationCap, Code2, Monitor, BrainCircuit, BookOpen } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useLanguage } from "@/components/providers/language-provider"
@@ -98,24 +97,6 @@ export function Education() {
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
                   {item.detail}
                 </p>
-
-                {/* progress bar */}
-                <div className="mt-5">
-                  <div className="h-1 w-full overflow-hidden rounded-full bg-border/60">
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ background: accent }}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: ongoing ? "62%" : "100%" }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                    />
-                  </div>
-                  <div className="mt-1.5 flex justify-between font-mono text-[10px] text-muted-foreground">
-                    <span>{ongoing ? e.progressOngoing : e.progressDone}</span>
-                    <span>{ongoing ? "62%" : "100%"}</span>
-                  </div>
-                </div>
               </MagicCard>
             </StaggerItem>
           )

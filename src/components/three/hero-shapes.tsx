@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { scrollState } from "@/lib/scroll-state"
+import { motionAmount, motionScale, scrollState } from "@/lib/scroll-state"
 
 function CodeLine({ 
   position, 
@@ -25,10 +25,11 @@ function CodeLine({
     const t = state.clock.elapsedTime
     
     // Y-axis floating
-    ref.current.position.y += Math.sin(t * speed + delayOffset) * 0.003
-    
+    ref.current.position.y +=
+      Math.sin(t * speed * motionScale + delayOffset) * 0.003 * motionAmount
+
     // Slow orbit rotation
-    ref.current.rotation.y += delta * speed * 0.15
+    ref.current.rotation.y += delta * speed * 0.15 * motionScale
   })
 
   return (
@@ -47,9 +48,11 @@ export function HeroShapes() {
     const p = scrollState.progress
 
     if (group.current) {
-      group.current.position.y = -p * 1.5 + Math.sin(t * 0.2) * 0.1
+      group.current.position.y =
+        -p * 1.5 + Math.sin(t * 0.2 * motionScale) * 0.1 * motionAmount
       group.current.rotation.x = p * 0.1
-      group.current.rotation.y = Math.sin(t * 0.1) * 0.1 + p * 0.2
+      group.current.rotation.y =
+        Math.sin(t * 0.1 * motionScale) * 0.1 * motionAmount + p * 0.2
       const s = 1 + p * 0.15
       group.current.scale.setScalar(s)
     }

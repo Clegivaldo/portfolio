@@ -3,7 +3,10 @@
 import { cn } from "@/lib/utils"
 import type { ReactNode } from "react"
 
-/** Infinite horizontal marquee. Duplicates children for seamless loop. */
+/**
+ * Infinite horizontal marquee. The children are rendered twice inside a single
+ * track, so translateX(-50%) loops seamlessly with half the DOM it used to have.
+ */
 export function Marquee({
   children,
   className,
@@ -25,27 +28,21 @@ export function Marquee({
       )}
     >
       <div
-        className="flex shrink-0 items-center gap-6 pr-6 [animation-play-state:running] group-hover:[animation-play-state:paused]"
+        className={cn(
+          "flex w-max shrink-0 items-center gap-6 pr-6",
+          pauseOnHover && "group-hover:[animation-play-state:paused]"
+        )}
         style={{
           animation: `marquee-x ${duration}s linear infinite`,
           animationDirection: reverse ? "reverse" : "normal",
+          willChange: "transform",
         }}
       >
         {children}
-        {children}
+        <span aria-hidden className="contents">
+          {children}
+        </span>
       </div>
-      <div
-        aria-hidden
-        className="flex shrink-0 items-center gap-6 pr-6 [animation-play-state:running] group-hover:[animation-play-state:paused]"
-        style={{
-          animation: `marquee-x ${duration}s linear infinite`,
-          animationDirection: reverse ? "reverse" : "normal",
-        }}
-      >
-        {children}
-        {children}
-      </div>
-      {pauseOnHover ? null : null}
     </div>
   )
 }

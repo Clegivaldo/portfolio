@@ -306,12 +306,30 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Animated conic angle for the border light (no transform, no overflow). */
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes border-beam-rotate {
+  to { --beam-angle: 360deg; }
+}
 @keyframes marquee-x {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
 .anim-float { animation: float-y 6s ease-in-out infinite; }
+
+/* Clips the animated conic gradient down to the 1px border ring. */
+.border-beam {
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
 .anim-blink { animation: blink 1.1s steps(1) infinite; }
 .anim-gradient-pan {
   background-size: 200% 200%;

@@ -1,11 +1,14 @@
 "use client"
 
-import type { ReactNode } from "react"
+import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * Animated gradient beam that traces the border of its parent.
- * Pure-CSS conic-gradient animation. Parent should be `relative`.
+ * Animated light that travels along the border of its parent.
+ * The conic gradient is masked down to a 1px ring (padding + content-box mask)
+ * and its angle is animated through a registered custom property, so nothing
+ * repaints outside the border and the card itself never rotates.
+ * Parent should be `relative`.
  */
 export function BorderBeam({
   className,
@@ -25,15 +28,19 @@ export function BorderBeam({
   return (
     <div
       aria-hidden
-      className={cn(
-        "pointer-events-none absolute inset-0 rounded-[inherit] [mask-clip:padding-box,border-box] [mask-composite:intersect] [mask-image:linear-gradient(transparent,transparent),linear-gradient(#000,#000)]",
-        className
-      )}
-      style={{
-        background: `conic-gradient(from ${delay * 360}deg, transparent 0deg, ${colorFrom} 80deg, ${colorTo} 140deg, transparent 220deg)`,
-        animation: `border-beam-spin ${duration}s linear infinite`,
-        backgroundSize: `${size}% ${size}%`,
-      }}
+      className={cn("border-beam pointer-events-none absolute inset-0 rounded-[inherit] p-px", className)}
+      style={
+        {
+          "--beam-from": colorFrom,
+          "--beam-to": colorTo,
+          "--beam-size": `${size}%`,
+          "--beam-delay": `${delay * -6}s`,
+          backgroundImage: `conic-gradient(from var(--beam-angle), transparent 0deg, var(--beam-from) 80deg, var(--beam-to) 140deg, transparent 220deg)`,
+          backgroundSize: "var(--beam-size) var(--beam-size)",
+          animation: `border-beam-rotate ${duration}s linear infinite`,
+          animationDelay: "var(--beam-delay)",
+        } as CSSProperties
+      }
     />
   )
 }

@@ -11,7 +11,7 @@ import { useRef, type MouseEvent } from "react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-import originalImg from "../../../public/profile/original.png"
+import portraitImg from "../../../public/profile/portrait.avif"
 
 /**
  * "Sensational" portrait treatment:
@@ -69,24 +69,18 @@ export function TiltPhoto({
         }}
       />
 
-      {/* floating accent orbs */}
-      <motion.div
+      {/* floating accent orbs (CSS-driven: stays off the main thread) */}
+      <div
         aria-hidden
-        className="absolute -left-6 top-10 h-3 w-3 rounded-full bg-accent3 shadow-glow"
-        animate={{ y: [0, -12, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className="anim-float absolute -left-6 top-10 h-3 w-3 rounded-full bg-accent3 shadow-glow"
       />
-      <motion.div
+      <div
         aria-hidden
-        className="absolute -right-4 top-1/3 h-2 w-2 rounded-full bg-accent2 shadow-glow"
-        animate={{ y: [0, 14, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+        className="anim-float absolute -right-4 top-1/3 h-2 w-2 rounded-full bg-accent2 shadow-glow [animation-delay:0.6s]"
       />
-      <motion.div
+      <div
         aria-hidden
-        className="absolute -right-8 bottom-16 h-2.5 w-2.5 rounded-full bg-primary shadow-glow"
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.1 }}
+        className="anim-float absolute -right-8 bottom-16 h-2.5 w-2.5 rounded-full bg-primary shadow-glow [animation-delay:1.1s]"
       />
 
       <motion.div
@@ -111,11 +105,11 @@ export function TiltPhoto({
         {/* portrait image */}
         <div className="absolute inset-[3px] clip-hex overflow-hidden">
           <Image
-            src={originalImg}
+            src={portraitImg}
             alt="Clegivaldo Cruz — Engenheiro de Computação"
             fill
             sizes={`${size}px`}
-            priority
+            loading="lazy"
             unoptimized
             className="object-cover object-top transition-[filter,transform] duration-700 group-hover:scale-[1.04]"
           />

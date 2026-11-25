@@ -3,7 +3,12 @@
 import { useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { scrollState } from "@/lib/scroll-state"
+import {
+  motionAmount,
+  motionScale,
+  prefersReducedMotion,
+  scrollState,
+} from "@/lib/scroll-state"
 
 /**
  * The "system deploying" metaphor: a wireframe browser window that
@@ -25,12 +30,16 @@ export function BrowserDeploy() {
 
     if (group.current) {
       group.current.visible = p > 0.45
+      // nothing to update while it is off-screen (most of the page)
+      if (!group.current.visible) return
       // position it to the right, drifting
       group.current.position.x = 3.4 - p * 1.2
       group.current.position.y = 1.6 - p * 1.2
       group.current.position.z = -1.5 + p * 0.5
-      group.current.rotation.y = -0.45 + Math.sin(t * 0.3) * 0.05
-      group.current.rotation.x = 0.12 + Math.sin(t * 0.25) * 0.04
+      group.current.rotation.y =
+        -0.45 + Math.sin(t * 0.3 * motionScale) * 0.05 * motionAmount
+      group.current.rotation.x =
+        0.12 + Math.sin(t * 0.25 * motionScale) * 0.04 * motionAmount
       // overall scale-in
       const s = 0.6 + build * 0.4
       group.current.scale.setScalar(s)
@@ -57,11 +66,12 @@ export function BrowserDeploy() {
 
     if (cursor.current) {
       // blinking cursor moving across content area
-      const blink = (Math.sin(t * 5) > 0) ? 1 : 0.1
+      const walk = t * 0.35 * motionScale
+      const blink = Math.sin(t * 5 * motionScale) > 0 ? 1 : 0.1
       const m = cursor.current.material as THREE.MeshBasicMaterial
-      m.opacity = build * 0.9 * blink
-      cursor.current.position.x = -1.3 + ((t * 0.35) % 2.6)
-      cursor.current.position.y = 0.4 - Math.floor((t * 0.35) % 5) * 0.22
+      m.opacity = build * (prefersReducedMotion ? 0.55 : 0.9) * blink
+      cursor.current.position.x = -1.3 + (walk % 2.6)
+      cursor.current.position.y = 0.4 - Math.floor(walk % 5) * 0.22
     }
 
     void delta

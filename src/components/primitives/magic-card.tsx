@@ -36,7 +36,7 @@ export function MagicCard({
         my.set(-200)
       }}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-border/70 bg-elevated/50 backdrop-blur-sm transition-colors duration-300 hover:border-primary/40",
+        "group relative overflow-hidden rounded-2xl border border-border/70 bg-elevated/60 transition-colors duration-300 hover:border-primary/40",
         className
       )}
     >

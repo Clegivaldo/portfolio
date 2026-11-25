@@ -12,6 +12,24 @@ export type ScrollState = {
   height: number
 }
 
+/**
+ * True when the visitor asked the OS for less motion. We do not freeze the
+ * scene for them: it keeps moving, just calmer (see `motionScale`).
+ */
+export const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+/**
+ * Multiplier applied to every idle animation in the 3D scene.
+ * 1 = normal; ~0.25 = slow and discreet, but still alive.
+ */
+export const motionScale = prefersReducedMotion ? 0.25 : 1
+
+/** Amplitude multiplier for drifts/parallax (also damps distance, not just speed). */
+export const motionAmount = prefersReducedMotion ? 0.45 : 1
+
 export const scrollState: ScrollState = {
   progress: 0,
   y: 0,

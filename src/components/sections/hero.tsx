@@ -36,7 +36,7 @@ export function Hero() {
     >
       <motion.div
         style={{ y, opacity, scale }}
-        className="relative z-10 mx-auto flex max-w-6xl flex-col items-center text-center"
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center text-center"
       >
         {/* legibility backdrop */}
         <div
@@ -44,7 +44,7 @@ export function Hero() {
           className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120%] w-[140%] -translate-x-1/2 -translate-y-1/2"
           style={{
             background:
-              "radial-gradient(ellipse 60% 55% at 50% 45%, rgba(5,6,10,0.78) 0%, rgba(5,6,10,0.45) 45%, transparent 75%)",
+              "radial-gradient(ellipse 72% 58% at 50% 45%, rgba(5,6,10,0.78) 0%, rgba(5,6,10,0.45) 45%, transparent 78%)",
             filter: "blur(2px)",
           }}
         />
@@ -68,10 +68,10 @@ export function Hero() {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl md:text-8xl"
+          className="whitespace-nowrap font-display text-[clamp(2.5rem,9vw,7.5rem)] font-bold leading-[1] tracking-tight"
         >
-          <span className="block text-foreground">{t.hero.nameFirst}</span>
-          <span className="block text-gradient anim-gradient-pan text-glow">
+          <span className="text-foreground">{t.hero.nameFirst}</span>{" "}
+          <span className="text-gradient anim-gradient-pan text-glow">
             {t.hero.nameLast}
           </span>
         </motion.h1>
@@ -99,7 +99,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.32 }}
-          className="mx-auto mt-8 max-w-2xl text-balance text-base leading-relaxed text-foreground/75 sm:text-lg"
+          className="mx-auto mt-7 max-w-4xl text-balance text-base leading-relaxed text-foreground/75 sm:text-lg"
         >
           {t.hero.pitch.map((seg, i) => {
             if ("hl" in seg && seg.hl === "primary") {
@@ -152,7 +152,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.56 }}
-          className="mt-14 grid w-full max-w-2xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60"
+          className="mt-14 grid w-full max-w-3xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60"
         >
           {t.hero.stats.map((s, i) => (
             <div
