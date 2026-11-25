@@ -2,16 +2,27 @@
 import { useEffect, useState, useRef, Children, ReactNode } from "react"
 import { motion, useInView } from "framer-motion"
 
-export function TerminalEffect({ command, children, prompt }: { command: string, children: ReactNode, prompt: string }) {
+export function TerminalEffect({
+  command,
+  prompt,
+  totalOutputChars = 0,
+  children
+}: {
+  command: string,
+  prompt: string,
+  totalOutputChars?: number,
+  children: ReactNode | ((progress: number) => ReactNode)
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true })
-  
+
   const [cmdLength, setCmdLength] = useState(0)
-  const [step, setStep] = useState(0) 
+  const [outLength, setOutLength] = useState(0)
+  const [step, setStep] = useState(0)
   // step 0 = typing command
-  // step 1 = show output
+  // step 1 = typing output
   // step 2 = show prompt
-  
+
   useEffect(() => {
     if (!isInView) return
 
@@ -24,13 +35,26 @@ export function TerminalEffect({ command, children, prompt }: { command: string,
         return () => clearTimeout(t)
       }
     } else if (step === 1) {
-       const t = setTimeout(() => setStep(2), 600)
-       return () => clearTimeout(t)
+      if (totalOutputChars > 0) {
+        if (outLength < totalOutputChars) {
+          // Output types very fast
+          const advance = Math.floor(Math.random() * 4) + 3; // 3 to 6 chars per tick
+          const t = setTimeout(() => setOutLength(c => Math.min(totalOutputChars, c + advance)), 16)
+          return () => clearTimeout(t)
+        } else {
+          const t = setTimeout(() => setStep(2), 200)
+          return () => clearTimeout(t)
+        }
+      } else {
+        const t = setTimeout(() => setStep(2), 600)
+        return () => clearTimeout(t)
+      }
     }
-  }, [cmdLength, command.length, isInView, step])
+  }, [cmdLength, command.length, isInView, step, outLength, totalOutputChars])
 
-  // Split children to animate them line by line
-  const lines = Children.toArray(children)
+  // Support both render prop and standard children
+  const isRenderProp = typeof children === "function"
+  const lines = !isRenderProp ? Children.toArray(children as ReactNode) : []
 
   return (
     <div ref={ref} className="min-h-[160px] text-left">
@@ -41,21 +65,25 @@ export function TerminalEffect({ command, children, prompt }: { command: string,
 
       {step >= 1 && (
         <div className="mt-2">
-          {lines.map((child, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.15, duration: 0.1 }}
-            >
-              {child}
-            </motion.div>
-          ))}
+          {isRenderProp ? (
+            children(outLength)
+          ) : (
+            lines.map((child, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: i * 0.15, duration: 0.1 }}
+              >
+                {child}
+              </motion.div>
+            ))
+          )}
         </div>
       )}
 
       {step >= 2 && (
-        <motion.p 
+        <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.1 }}

@@ -4,12 +4,8 @@ import { TerminalEffect } from "@/components/ui/terminal-effect"
 import { SectionHeading } from "@/components/primitives/section-heading"
 import { TiltPhoto } from "@/components/primitives/tilt-photo"
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/primitives/reveal"
-import { NumberTicker } from "@/components/primitives/number-ticker"
-import { Coffee, Heart, Lightbulb, Rocket } from "lucide-react"
 import { useLanguage } from "@/components/providers/language-provider"
 import type { Segment } from "@/lib/i18n/dictionaries"
-
-const TRAIT_ICONS = [Lightbulb, Rocket, Coffee, Heart]
 
 const SEGMENT_COLOR: Record<NonNullable<Segment["hl"]>, string> = {
   fg: "text-foreground",
@@ -18,21 +14,46 @@ const SEGMENT_COLOR: Record<NonNullable<Segment["hl"]>, string> = {
   accent3: "text-accent3",
 }
 
-function SegmentedText({ segments }: { segments: readonly any[] }) {
+function TypewriterParagraph({
+  segments,
+  progress,
+  offset
+}: {
+  segments: readonly Segment[],
+  progress: number,
+  offset: number
+}) {
+  let count = offset;
+
+  if (progress <= offset) return null;
+
   return (
-    <>
-      {segments.map((seg, i) => (
-        <span key={i} className={seg.hl ? SEGMENT_COLOR[seg.hl] : ""}>
-          {seg.text}
-        </span>
-      ))}
-    </>
+    <p className="mt-3 text-foreground/90">
+      {segments.map((seg, i) => {
+        const segLen = seg.text.length;
+        if (count >= progress) return null;
+        const charsToShow = Math.min(segLen, progress - count);
+        count += segLen;
+
+        // Render either the full segment (if completed) or a partial one
+        return (
+          <span key={i} className={seg.hl ? SEGMENT_COLOR[seg.hl] : ""}>
+            {seg.text.substring(0, charsToShow)}
+          </span>
+        );
+      })}
+    </p>
   )
 }
 
 export function About() {
   const { t } = useLanguage()
   const a = t.about
+
+  const p1Len = a.terminal.p1.reduce((acc, s) => acc + s.text.length, 0)
+  const p2Len = a.terminal.p2.reduce((acc, s) => acc + s.text.length, 0)
+  const p3Len = a.terminal.p3.reduce((acc, s) => acc + s.text.length, 0)
+  const totalChars = p1Len + p2Len + p3Len
 
   return (
     <section
@@ -65,16 +86,18 @@ export function About() {
                 </span>
               </div>
               <div className="p-5 font-mono text-sm leading-relaxed">
-                <TerminalEffect command={a.terminal.cat} prompt={a.terminal.prompt}>
-                  <p className="mt-3 text-foreground/90">
-                    <SegmentedText segments={a.terminal.p1} />
-                  </p>
-                  <p className="mt-3 text-foreground/90">
-                    <SegmentedText segments={a.terminal.p2} />
-                  </p>
-                  <p className="mt-3 text-foreground/90">
-                    <SegmentedText segments={a.terminal.p3} />
-                  </p>
+                <TerminalEffect
+                  command={a.terminal.cat}
+                  prompt={a.terminal.prompt}
+                  totalOutputChars={totalChars}
+                >
+                  {(progress) => (
+                    <>
+                      <TypewriterParagraph segments={a.terminal.p1} progress={progress} offset={0} />
+                      <TypewriterParagraph segments={a.terminal.p2} progress={progress} offset={p1Len} />
+                      <TypewriterParagraph segments={a.terminal.p3} progress={progress} offset={p1Len + p2Len} />
+                    </>
+                  )}
                 </TerminalEffect>
               </div>
             </div>
@@ -97,44 +120,6 @@ export function About() {
           </StaggerGroup>
         </div>
       </div>
-
-      {/* stats */}
-      <StaggerGroup className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {a.stats.map((s, i) => (
-          <StaggerItem key={i}>
-            <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-elevated/30 p-6 text-center backdrop-blur">
-              <div className="font-display text-4xl font-bold text-gradient md:text-5xl">
-                <NumberTicker value={s.v} suffix={s.suffix} />
-              </div>
-              <div className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">
-                {s.label}
-              </div>
-            </div>
-          </StaggerItem>
-        ))}
-      </StaggerGroup>
-
-      {/* traits */}
-      <StaggerGroup className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {a.traits.map((tr, i) => {
-          const Icon = TRAIT_ICONS[i] ?? Lightbulb
-          return (
-            <StaggerItem key={i}>
-              <div className="group h-full rounded-2xl border border-border/60 bg-elevated/30 p-5 backdrop-blur transition-colors hover:border-primary/40">
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="font-display text-base font-semibold text-foreground">
-                  {tr.title}
-                </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  {tr.desc}
-                </p>
-              </div>
-            </StaggerItem>
-          )
-        })}
-      </StaggerGroup>
     </section>
   )
 }
